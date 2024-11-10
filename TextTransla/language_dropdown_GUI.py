@@ -20,8 +20,9 @@ def main():
     button_send_to_web.grid(row = 1, column = 1, padx = 10, pady = 10)
 
     button_exit = tk.Button(root, text = "End", command = exit)
-    button_exit.grid(row = 2, column = 1, padx = 10, pady = 10)
-
+    button_exit.grid(row = 2, column = 1, padx = 10, pady = 10, sticky="nsew")
+    camera_works_path = os.path.abspath('../CameraWorks')  # Adjust path as needed
+    sys.path.append(camera_works_path)
 
 
 
@@ -30,8 +31,6 @@ def main():
 
 #button that is clicked which opens application
 def click_button():
-    camera_works_path = os.path.abspath('../CameraWorks')  # Adjust path as needed
-    sys.path.append(camera_works_path)
     import face_detection_with_subtitles as c
     return c
 
