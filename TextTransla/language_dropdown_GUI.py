@@ -20,26 +20,24 @@ def main():
     button_send_to_web.grid(row = 1, column = 1, padx = 10, pady = 10)
 
     button_exit = tk.Button(root, text = "End", command = exit)
-    button_exit.grid(row = 2, column = 1, padx = 10, pady = 10, sticky="nsew")
-    camera_works_path = os.path.abspath('../CameraWorks')  # Adjust path as needed
+    button_exit.grid(row = 2, column = 1, padx = 10, pady = 10)
+    camera_works_path = os.path.abspath('../CameraWorks')
     sys.path.append(camera_works_path)
+    def click_button():
+        global root
+        import face_detection_with_subtitles as c
+        root.destroy()
+        return c
 
+# dictionary for language translated and targets
+    def language_tab():
+        return
+
+    def gui_language_dropdown():
+        return
 
 
     root.mainloop()
 
-
-#button that is clicked which opens application
-def click_button():
-    import face_detection_with_subtitles as c
-    return c
-
-
-# dictionary for language translated and targets
-def language_tab():
-    return
-
-def gui_language_dropdown():
-    return
 
 main()
