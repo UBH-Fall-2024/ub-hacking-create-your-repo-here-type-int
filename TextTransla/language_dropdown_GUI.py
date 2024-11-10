@@ -2,14 +2,26 @@ import os
 import tkinter as tk
 import sys
 import threading
+import subprocess
+import time
 from tkinter import ttk
 from googletrans import LANGUAGES
 lang_dict = {value: key for key, value in LANGUAGES.items()}
 langs = []
 for lang in lang_dict:
-    if lang == "arabic" or lang == "french" or lang == "russian" or lang == "hindi" or lang == "turkish":
+    if lang == "arabic" or lang == "french" or lang == "hindi" or lang == "turkish":
         langs.append(lang)
+        
+lang_to_model = {  
+                 "arabic" : "vosk-model-ar-0.22-linto-1.1.0",
+                    "french" : "vosk-model-fr-0.6-linto-2.2.0",
+                    "turkish" : "vosk-model-small-tr-0.3",
+                 "russian" : "vosk-model-ru-0.42",
+                 "hindi" : "vosk-model-hi-0.22"
+                 }
+
 name_selected = False
+selected_language = None
 def main():
     root = tk.Tk()
     root.title("Instant Language Translator")
@@ -55,16 +67,24 @@ def main():
 
     content_notebook = ttk.Notebook(root)
     content_notebook.pack(expand=True, fill="both")
+    
     def click_button():
-        if name_selected:
-            import face_detection_with_subtitles as c
-            return c
+        if name_selected and selected_language:
+            subprocess.Popen(["python3", "offline.py", selected_language])
+            print(f"Starting Vosk server with language: {selected_language}")
+            time.sleep(4)
+            subprocess.Popen(["python3", "face_detection_with_subtitlesv.py"])
     def start_task():
         task_thread = threading.Thread(target=click_button)
         task_thread.start()
+
     def curr_lang(tab_name):
-        global name_selected
+        global name_selected, selected_language
         selected_tab_label.config(text="Select a Language: " + tab_name)
+        selected_language = lang_to_model[tab_name] 
         name_selected = True
+        print(f"Selected language: {selected_language}")
+
     root.mainloop()
+
 main()
