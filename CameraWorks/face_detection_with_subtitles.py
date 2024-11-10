@@ -14,7 +14,6 @@ coordinates_buffer = collections.deque(maxlen=5)
 def update_subtitle_text():
     global subtitle_text
     while True:
-        # Continuously take user input to update the subtitle text
         new_text = input("Enter new subtitle: ")
         subtitle_text = new_text
 
@@ -32,7 +31,7 @@ def draw_rounded_rectangle(img, top_left, bottom_right, color, thickness, radius
     cv2.circle(img, (x2 - radius, y2 - radius), radius, color, thickness)
 
 
-input_thread = threading.Thread(target=receive_subtitles, daemon=True)
+input_thread = threading.Thread(target=update_subtitle_text, daemon=True)
 input_thread.start()
 
 cap = cv2.VideoCapture(0)
