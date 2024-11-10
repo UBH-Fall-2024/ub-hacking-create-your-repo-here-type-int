@@ -13,7 +13,7 @@ This project is a language translation tool designed for **real-time, instant tr
 
 - **Python:** The primary programming language for backend processing and GUI design.
 - **Tkinter:** For building a responsive and accessible GUI.
-- **SpeechRecognition:** To capture and process live spoken input.
+- **VolkSpeechRecognition:** To capture and process live spoken input.
 - **googletrans:** For translation services, supporting various language pairs.
 - **OpenCV:** For integrating live camera feeds (if needed for video-based translation).
   
