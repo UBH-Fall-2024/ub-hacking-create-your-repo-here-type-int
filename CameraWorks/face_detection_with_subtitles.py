@@ -2,12 +2,12 @@ import cv2
 import mediapipe as mp
 import threading
 import collections
-import socket
+import textwrap
 
 mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
 
-subtitle_text = "Starting subtitles..."
+subtitle_text = "Tahia Djzair, Kassaman binazilat al ma7iqat.... wa dima'a azakiyat atahirat.. .. .. .."
 
 coordinates_buffer = collections.deque(maxlen=5)
 
@@ -17,7 +17,7 @@ def update_subtitle_text():
         new_text = input("Enter new subtitle: ")
         subtitle_text = new_text
 
-# Draw background of subtitles(black rounded rectangle)
+# Draw background of subtitles (black rounded rectangle)
 def draw_rounded_rectangle(img, top_left, bottom_right, color, thickness, radius=10):
     x1, y1 = top_left
     x2, y2 = bottom_right
@@ -30,6 +30,23 @@ def draw_rounded_rectangle(img, top_left, bottom_right, color, thickness, radius
     cv2.circle(img, (x1 + radius, y2 - radius), radius, color, thickness)
     cv2.circle(img, (x2 - radius, y2 - radius), radius, color, thickness)
 
+def wrap_text(text, max_width, font, font_scale, thickness):
+    """Splits text into lines that fit within max_width."""
+    lines = []
+    words = text.split()
+    current_line = words[0]
+
+    for word in words[1:]:
+        test_line = current_line + ' ' + word
+        text_size = cv2.getTextSize(test_line, font, font_scale, thickness)[0]
+        if text_size[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+    lines.append(current_line)  
+
+    return lines
 
 input_thread = threading.Thread(target=update_subtitle_text, daemon=True)
 input_thread.start()
@@ -65,21 +82,27 @@ with mp_face_detection.FaceDetection(min_detection_confidence=0.5) as face_detec
                 font_thickness = 2
                 font = cv2.FONT_HERSHEY_DUPLEX
 
-                text_size = cv2.getTextSize(subtitle_text, font, font_size, font_thickness)[0]
-                text_width = text_size[0]
-                text_height = text_size[1]
+                max_width = min(400, iw)  
 
-                centered_text_x = text_x - (text_width // 2)
+                # this will wrap text
+                wrapped_lines = wrap_text(subtitle_text, max_width, font, font_size, font_thickness)
 
-                text_x_end = min(centered_text_x + text_width, iw)
-                text_y_end = min(text_y + text_height + 10, ih)
+                text_height = cv2.getTextSize('A', font, font_size, font_thickness)[0][1]
+                total_height = (text_height + 10) * len(wrapped_lines) 
 
-                padding = 12  
+                max_line_width = max([cv2.getTextSize(line, font, font_size, font_thickness)[0][0] for line in wrapped_lines])
+
+                centered_text_x = text_x - (max_line_width // 2)
+
+                padding = 12
                 draw_rounded_rectangle(frame, (centered_text_x - padding, text_y - padding),
-                                       (text_x_end + padding, text_y_end + padding), (0, 0, 0), -1, radius=15)
+                                       (centered_text_x + max_line_width + padding, text_y + total_height + padding), 
+                                       (0, 0, 0), -1, radius=15)
 
-                cv2.putText(frame, subtitle_text, (centered_text_x, text_y + text_height),
-                            font, font_size, (255, 255, 255), font_thickness, cv2.LINE_AA)
+                for i, line in enumerate(wrapped_lines):
+                    line_y = text_y + (i * (text_height + 10)) + text_height
+                    cv2.putText(frame, line, (centered_text_x, line_y),
+                                font, font_size, (255, 255, 255), font_thickness, cv2.LINE_AA)
 
         cv2.imshow('Face Detection with Subtitles', frame)
 
