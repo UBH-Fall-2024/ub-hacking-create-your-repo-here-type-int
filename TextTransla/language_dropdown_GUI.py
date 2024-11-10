@@ -39,8 +39,6 @@ def main():
     for i, lang in enumerate(langs):
         tab_button = tk.Button(tab_frame, text=lang, font = ("Helvetica", 18), bg ="blue", fg ="white", command=lambda name = lang: curr_lang(name), width=15, height=3)
         tab_button.grid(row=0, column=i, padx=8, pady = 25)
-        if i == 5:
-            break
 
 
     selected_tab_label = tk.Label(root, text="Select a Language:", font=("Helvetica", 35), bg = "light blue", pady = 10)
