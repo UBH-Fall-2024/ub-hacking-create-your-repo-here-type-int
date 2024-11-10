@@ -11,15 +11,12 @@ subtitle_text = "Starting subtitles..."
 
 coordinates_buffer = collections.deque(maxlen=5)
 
-def receive_subtitles(host='localhost', port=65434):
+def update_subtitle_text():
     global subtitle_text
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-        client_socket.connect((host, port))
-        print(f"Connected to server at {host}:{port}")
-        while True:
-            data = client_socket.recv(1024)
-            if data:
-                subtitle_text = data.decode('utf-8')
+    while True:
+        # Continuously take user input to update the subtitle text
+        new_text = input("Enter new subtitle: ")
+        subtitle_text = new_text
 
 # Draw background of subtitles(black rounded rectangle)
 def draw_rounded_rectangle(img, top_left, bottom_right, color, thickness, radius=10):
