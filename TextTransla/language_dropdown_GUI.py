@@ -6,6 +6,7 @@ import subprocess
 import time
 from tkinter import ttk
 from googletrans import LANGUAGES
+
 lang_dict = {value: key for key, value in LANGUAGES.items()}
 langs = []
 for lang in lang_dict:
@@ -19,7 +20,6 @@ lang_to_model = {
                  "russian" : "vosk-model-ru-0.42",
                  "hindi" : "vosk-model-hi-0.22"
                  }
-
 name_selected = False
 selected_language = None
 def main():
@@ -51,9 +51,10 @@ def main():
     for i, lang in enumerate(langs):
         tab_button = tk.Button(tab_frame, text=lang, font = ("Helvetica", 18), bg ="blue", fg ="white", command=lambda name = lang: curr_lang(name), width=15, height=3)
         tab_button.grid(row=0, column=i, padx=8, pady = 25)
+        if i == 5:
+            break
 
-
-    selected_tab_label = tk.Label(root, text="Select a Language:", font=("Helvetica", 35), bg = "light blue", pady = 10)
+    selected_tab_label = tk.Label(root, text="Select a Language: ", font=("Helvetica", 35), bg = "light blue", pady = 10)
     selected_tab_label.place(x = 159, y = 350)
 
     names_label = tk.Label(root, text="Umair Ali\n Faraz Akber\nAhmed Bouhraoua\nTaha Hayali", font=("Helvetica", 15), justify="center", padx = 15, pady = 10)
@@ -65,13 +66,14 @@ def main():
 
     content_notebook = ttk.Notebook(root)
     content_notebook.pack(expand=True, fill="both")
-    
+
     def click_button():
+        print("click_button() called")
         if name_selected and selected_language:
-            subprocess.Popen(["python3", "offline.py", selected_language])
+            subprocess.Popen(["python", "offline.py", selected_language])
             print(f"Starting Vosk server with language: {selected_language}")
             time.sleep(4)
-            subprocess.Popen(["python3", "face_detection_with_subtitlesv.py"])
+            subprocess.Popen(["python", "face_detection_with_subtitlesv.py"])
     def start_task():
         task_thread = threading.Thread(target=click_button)
         task_thread.start()
